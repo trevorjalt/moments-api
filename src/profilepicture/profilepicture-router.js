@@ -72,7 +72,7 @@ async function uploadProfilePicture(req, res, next) {
                 return
             }
             console.log('Temp Image Deleted')
-            res.sendStatus(201)
+            res.sendStatus(201).end()
         })
     } catch(error) {
         next(error)
@@ -131,8 +131,11 @@ async function downloadProfilePicture(req, res, next) {
             req.app.get('db'),
             req.user.id
         )
-
-        res.json(rows)
+        console.log('ROWS', rows)
+        return res
+            .status(200)
+            .json(rows)
+            .end()
     } catch(error) {
         next(error)
     }

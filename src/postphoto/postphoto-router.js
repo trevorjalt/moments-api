@@ -68,7 +68,7 @@ async function uploadPostPhoto(req, res, next) {
                 return
             }
             console.log('Temp Image Deleted')
-            res.sendStatus(201)
+            res.sendStatus(201).end()
         })
     } catch(error) {
         next(error)
@@ -82,7 +82,10 @@ async function downloadPostPhoto(req, res, next) {
             req.user.id
         )
 
-        res.json(rows)
+        return res
+            .status(200)
+            .json(rows)
+            .end()
     } catch(error) {
         next(error)
     }

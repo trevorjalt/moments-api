@@ -40,19 +40,22 @@ function makeUsersArray() {
     ]
 }
 
-function makeProfilePicture() {
-    // const imgData = fs.readFileSync.mockResolvedData()
-
-    return {
-        img_file: fs.readFileSync('./images/moments-test.png', 'utf-8'),
-        img_type: 'image/png'
-    }
-
+function makeProfilePictureArray(users) {
+    return [
+        {
+            id: 1,
+            date_created: new Date().toISOString(),
+            img_type: 'image/jpg',
+            img_file: `${__dirname}/images/moments-test.jpg`,
+            user_id: users[0].id
+        }
+    ]
 }
+
 
 function makeMomentsFixtures() {
     const testUsers = makeUsersArray()
-    const testProfilePicture = makeProfilePicture()
+    const testProfilePicture = makeProfilePictureArray(testUsers)
     return { testUsers, testProfilePicture }
 }
 
@@ -62,6 +65,18 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
         algorithm: 'HS256',
     })
     return `Bearer ${token}`
+}
+
+function makeExpectedProfilePicture(profilepicture) {
+    return [
+        {
+            id: profilepicture.id,
+            date_created: profilepicture.date_created,
+            img_type: profilepicture.img_type,
+            img_file: profilepicture.img_file,
+            user_id: profilepicture.user_id,
+        }
+    ]
 }
 
 function seedUsers(db, users) {
@@ -112,15 +127,24 @@ function cleanTables(db) {
         trx.raw(
             `TRUNCATE
                 user_information,
-                user_profile_picture
+                user_profile_picture,
+                user_connection,
+                post_photo,
+                post_caption
             `
         )
             .then(() =>
                 Promise.all([
                     trx.raw(`ALTER SEQUENCE user_information_id_seq minvalue 0 START WITH 1`),
                     trx.raw(`ALTER SEQUENCE user_profile_picture_id_seq minvalue 0 START WITH 1`),
+                    trx.raw(`ALTER SEQUENCE user_connection_id_seq minvalue 0 START WITH 1`),
+                    trx.raw(`ALTER SEQUENCE post_photo_id_seq minvalue 0 START WITH 1`),
+                    trx.raw(`ALTER SEQUENCE post_caption_id_seq minvalue 0 START WITH 1`),
                     trx.raw(`SELECT setval('user_information_id_seq', 0)`),
                     trx.raw(`SELECT setval('user_profile_picture_id_seq', 0)`),
+                    trx.raw(`SELECT setval('user_connection_id_seq', 0)`),
+                    trx.raw(`SELECT setval('post_photo_id_seq', 0)`),
+                    trx.raw(`SELECT setval('post_caption_id_seq', 0)`),
                 ])
             )
     )
@@ -128,9 +152,10 @@ function cleanTables(db) {
 
 module.exports = {
     makeUsersArray,
-    makeProfilePicture,
+    makeProfilePictureArray,
     makeMomentsFixtures,
     makeAuthHeader,
+    makeExpectedProfilePicture,
     seedUsers,
     seedMomentsTables,
     cleanTables,
