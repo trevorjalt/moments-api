@@ -77,7 +77,7 @@ async function uploadPostPhoto(req, res, next) {
 
 async function downloadPostPhoto(req, res, next) {
     try {
-        const rows = await PostPhotoService.getPostPhotos(
+        const rows = await PostPhotoService.getUserPostPhotos(
             req.app.get('db'),
             req.user.id
         )

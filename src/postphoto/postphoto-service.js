@@ -1,5 +1,5 @@
 const PostPhotoService = {
-    getPostPhotos(db, id) {
+    getUserPostPhotos(db, id) {
         return db
             .from('post_photo AS post_photo')
             .select('*')
