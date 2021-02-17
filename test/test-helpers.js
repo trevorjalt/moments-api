@@ -104,7 +104,6 @@ function makeExpectedImage(profilepicture) {
 }
 
 function makeMaliciousCaption(user, postphoto) {
-    console.log('ID ID ID ID ID', postphoto.id)
     const maliciousCaption = {
         id: 911,
         caption: 'Naughty naughty very naughty <script>alert("xss");</script>',
@@ -116,7 +115,7 @@ function makeMaliciousCaption(user, postphoto) {
 
     const expectedCaption = {
         ...makeExpectedCaption(maliciousCaption),
-        caption: 'Naughty naughty very naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;',
+        caption: 'Naughty naughty very naughty &lt;script&gt;alert("xss");&lt;/script&gt;',
     }
     return {
         maliciousCaption,

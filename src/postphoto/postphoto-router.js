@@ -3,6 +3,7 @@ const fs = require('fs')
 const multer = require('multer')
 const path = require('path')
 const PostPhotoService = require('./postphoto-service')
+const PostCaptionService = require ('../postcaption/postcaption-service')
 // const { DB_URL } = require('../config')
 const { requireAuth } = require('../middleware/jwt-auth')
 
@@ -33,16 +34,18 @@ postPhotoRouter
     .route('/download')
     .get(requireAuth, downloadPostPhoto)
 
+
 async function uploadPostPhoto(req, res, next) {
     try { 
         
-        // console.log('REQUEST REQUEST', req)
+        // console.log('REQUEST REQUEST', req.body)
         // console.log('FILE FILE', req.file)
         
         const imgData = fs.readFileSync(req.file.path)
 
+        const captionData = req.body.caption_input
+
         const uploadData = {
-            // name: req.body.someText,
             img_type: req.file.mimetype,
             img_file: imgData
         }
@@ -60,7 +63,7 @@ async function uploadPostPhoto(req, res, next) {
             uploadData
         )
 
-        console.log(rows[0]);
+        // console.log('ROW ROW ROW', rows);
 
         fs.unlink(req.file.path, function(err) {
             if (err) {
@@ -68,8 +71,37 @@ async function uploadPostPhoto(req, res, next) {
                 return
             }
             console.log('Temp Image Deleted')
-            res.sendStatus(201).end()
+            // return res
+            //     .status(201)
+            //     .json(PostPhotoService.serializePost(rows))
+            //     // .end()
         })
+
+        const postPhotoId = PostPhotoService.serializePost(rows)
+
+        const newCaption = { 
+            post_photo_id: postPhotoId.id,
+            caption: captionData
+        }
+
+        for (const [key, value] of Object.entries(newCaption))
+            if (value == null)
+            return res.status(400).json({
+                error: { message: `Missing '${key}' in request body`}
+            })
+
+        newCaption.user_id = req.user.id
+
+        const postcaption = await PostCaptionService.insertCaption(
+            req.app.get('db'),
+            newCaption
+        )
+
+        await res
+            .status(201)
+            // .location(`/api/post-caption/${postcaption.id}`)
+            .json(PostCaptionService.serializeCaption(postcaption))
+            .end()
     } catch(error) {
         next(error)
     }

@@ -38,26 +38,31 @@ describe('Protected endpoints', function() {
     )
 
     const protectedEndpoints = [
-        // {
-        //     name: 'POST /api/post-photo/upload',
-        //     path: '/api/post-photo/upload',
-        //     method: supertest(app).get,
-        // },
+        {
+            name: 'GET /api/post-caption',
+            path: '/api/post-caption',
+            method: supertest(app).get,
+        },
+        {
+            name: 'POST /api/post-photo/upload',
+            path: '/api/post-photo/upload',
+            method: supertest(app).post,
+        },
         {
             name: 'GET /api/post-photo/download',
             path: '/api/post-photo/download',
             method: supertest(app).get,
         },
-        // {
-        //     name: 'POST /api/profile-picture/upload',
-        //     path: '/api/profile-picture/upload',
-        //     method: supertest(app).get,
-        // },
-        // {
-        //     name: 'PATCH /api/profile-picture/upload/:profilepicture_id',
-        //     path: '/api/profile-picture/upload/1',
-        //     method: supertest(app).get,
-        // },
+        {
+            name: 'POST /api/profile-picture/upload',
+            path: '/api/profile-picture/upload',
+            method: supertest(app).post,
+        },
+        {
+            name: 'PATCH /api/profile-picture/upload/:profilepicture_id',
+            path: '/api/profile-picture/upload/1',
+            method: supertest(app).patch,
+        },
         {
             name: 'GET /api/profile-picture/download',
             path: '/api/profile-picture/download',

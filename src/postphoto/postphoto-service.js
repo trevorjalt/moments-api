@@ -13,6 +13,9 @@ const PostPhotoService = {
             .into('post_photo')
             .returning('*')
             .then(([data]) => data)
+            .then(data =>
+                PostPhotoService.getById(db, data.id)
+            )
     },
 
     getById(db, id) {
@@ -20,7 +23,14 @@ const PostPhotoService = {
             .from('post_photo AS post_photo')
             .select('*')
             .where('post_photo.id', id)
+            .first()
     },
+
+    serializePost(post) {
+        return {
+            id: post.id,
+        }
+    }
 }
 
 module.exports = PostPhotoService

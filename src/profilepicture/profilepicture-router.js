@@ -64,7 +64,7 @@ async function uploadProfilePicture(req, res, next) {
             uploadData
         )
 
-        console.log(rows[0]);
+        // console.log(rows[0]);
 
         fs.unlink(req.file.path, function(err) {
             if (err) {
@@ -106,7 +106,7 @@ async function updateProfilePicture(req, res, next) {
             updateData
         )
 
-        console.log(rows[0]);
+        // console.log(rows[0]);
 
         fs.unlink(req.file.path, function(err) {
             if (err) {
