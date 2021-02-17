@@ -79,19 +79,15 @@ async function uploadProfilePicture(req, res, next) {
     }
 }
 
-async function updateProfilePicture(req, res, next) {
-    console.log('request body', req.body)
-    console.log('request file', req.file)
-    
+async function updateProfilePicture(req, res, next) {   
     try { 
         
         // console.log('REQUEST REQUEST', req)
-        console.log('FILE FILE', req.file)
+        // console.log('FILE FILE', req.file)
         
         const imgData = fs.readFileSync(req.file.path)
 
         const updateData = {
-            // name: req.body.someText,
             img_type: req.file.mimetype,
             img_file: imgData,
             date_created: new Date(),
@@ -131,7 +127,6 @@ async function downloadProfilePicture(req, res, next) {
             req.app.get('db'),
             req.user.id
         )
-        console.log('ROWS', rows)
         return res
             .status(200)
             .json(rows)
@@ -143,7 +138,6 @@ async function downloadProfilePicture(req, res, next) {
 
 async function verifyProfilePictureExists(req, res, next) {
     try {
-        console.log('PARAMS', req.params.profilepicture_id)
         const currentProfilePicture = await ProfilePictureService.getById(
             req.app.get('db'),
             req.params.profilepicture_id

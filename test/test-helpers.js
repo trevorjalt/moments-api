@@ -40,23 +40,36 @@ function makeUsersArray() {
     ]
 }
 
-function makeProfilePictureArray(users) {
+function makeImageArray(users) {
     return [
         {
             id: 1,
             date_created: new Date().toISOString(),
             img_type: 'image/jpg',
-            img_file: `${__dirname}/images/moments-test.jpg`,
+            img_file: { type: 'Buffer', data: [] },
             user_id: users[0].id
         }
     ]
 }
 
+function makePostCaptionArray(users, postphotos) {
+    return [
+        {
+            id: 1,
+            caption: 'Amazing quotes and song lyrics',
+            date_created: new Date().toISOString(),
+            post_photo_id: postphotos[0].id,
+            user_id: users[0].id
+        }
+    ]
+}
 
 function makeMomentsFixtures() {
     const testUsers = makeUsersArray()
-    const testProfilePicture = makeProfilePictureArray(testUsers)
-    return { testUsers, testProfilePicture }
+    const testProfilePicture = makeImageArray(testUsers)
+    const testPostPhoto = makeImageArray(testUsers)
+    const testPostCaption = makePostCaptionArray(testUsers, testPostPhoto)
+    return { testUsers, testProfilePicture, testPostPhoto, testPostCaption }
 }
 
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
@@ -67,16 +80,48 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
     return `Bearer ${token}`
 }
 
-function makeExpectedProfilePicture(profilepicture) {
-    return [
-        {
+function makeExpectedCaption(caption) {
+    return {
+        id: caption.id,
+        caption: caption.caption,
+        date_created: caption.date_created,
+        date_modified: null,
+        post_photo_id: caption.post_photo_id,
+        user_id: caption.user_id,
+    }    
+}
+
+function makeExpectedImage(profilepicture) {
+    return {
             id: profilepicture.id,
             date_created: profilepicture.date_created,
             img_type: profilepicture.img_type,
-            img_file: profilepicture.img_file,
+            img_file: { type: 'Buffer', data: 
+                [123,34,116,121,112,101,34,58,34,66,117,102,102,101,114,34,44,34,100,97,116,97,34,58,91,93,125] },
             user_id: profilepicture.user_id,
         }
-    ]
+    
+}
+
+function makeMaliciousCaption(user, postphoto) {
+    console.log('ID ID ID ID ID', postphoto.id)
+    const maliciousCaption = {
+        id: 911,
+        caption: 'Naughty naughty very naughty <script>alert("xss");</script>',
+        date_created: new Date(),
+        date_modified: null,
+        post_photo_id: postphoto.id,
+        user_id: user.id,
+    }
+
+    const expectedCaption = {
+        ...makeExpectedCaption(maliciousCaption),
+        caption: 'Naughty naughty very naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;',
+    }
+    return {
+        maliciousCaption,
+        expectedCaption,
+    }
 }
 
 function seedUsers(db, users) {
@@ -93,7 +138,7 @@ function seedUsers(db, users) {
         )
 }
 
-function seedMomentsTables(db, users, profilepicture ) {
+function seedMomentsTables(db, users, profilepicture, postphoto, postcaption ) {
     // use a transaction to group the queries and auto rollback on any failure
     return db.transaction(async trx => {
         await seedUsers(trx, users)
@@ -111,15 +156,28 @@ function seedMomentsTables(db, users, profilepicture ) {
         //         [connections[connections.length -1].id],
         //     )
         // }
-        // //only insert profilepictures if there are some, also update the sequence counter
-        // if (profilepictures) {
-        //     await trx.into('user_profile_picture').insert(profilepictures)
-        //     await trx.raw(
-        //         `SELECT setval('user_profile_picture_id_seq', ?)`,
-        //         [profilepictures[profilepictures.length -1].id],
-        //     )
-        // }
+        // //only insert postphotos if there are some, also update the sequence counter
+        if (postphoto) {
+            await trx.into('post_photo').insert(postphoto)
+            await trx.raw(
+                `SELECT setval('post_photo_id_seq', ?)`,
+                [postphoto[postphoto.length -1].id],
+            )
+        }
+        if (postcaption) {
+            await trx.into('post_caption').insert(postcaption)
+            await trx.raw(
+                `SELECT setval('post_caption_id_seq', ?)`,
+                [postcaption[postcaption.length -1].id],
+            )
+        }
     })
+}
+
+function seedMaliciousCaption(db, caption) {
+    return db
+        .into('post_caption')
+        .insert([caption])    
 }
 
 function cleanTables(db) {
@@ -152,11 +210,15 @@ function cleanTables(db) {
 
 module.exports = {
     makeUsersArray,
-    makeProfilePictureArray,
+    makeImageArray,
+    makePostCaptionArray,
     makeMomentsFixtures,
     makeAuthHeader,
-    makeExpectedProfilePicture,
+    makeExpectedCaption,
+    makeExpectedImage,
+    makeMaliciousCaption,
     seedUsers,
     seedMomentsTables,
+    seedMaliciousCaption,
     cleanTables,
 }

@@ -93,7 +93,6 @@ async function downloadPostPhoto(req, res, next) {
 
 async function verifyPostPhotoExists(req, res, next) {
     try {
-        console.log('PARAMS', req.params.postphoto_id)
         const currentPostPhoto = await PostPhotoService.getById(
             req.app.get('db'),
             req.params.postphoto_id

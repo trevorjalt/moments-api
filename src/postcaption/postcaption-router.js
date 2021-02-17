@@ -13,7 +13,6 @@ postCaptionRouter
     .post(requireAuth, jsonBodyParser, createCaption)
 
 async function getUserPostCaptions(req, res, next) {
-    console.log('getting')
     try {
         const postCaptions = await PostCaptionService.getUserCaptions(
             req.app.get('db'),
