@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const { NODE_ENV } = require('./config');
 const authRouter = require('./auth/auth-router')
 const connectionRouter = require('./connection/connection-router')
+const feedRouter = require('./feed/feed-router')
 const postCaptionRouter = require('./postcaption/postcaption-router')
 const postPhotoRouter = require('./postphoto/postphoto-router')
 const profilePictureRouter = require('./profilepicture/profilepicture-router')
@@ -21,6 +22,7 @@ app.use(cors());
 
 app.use('/api/auth', authRouter)
 app.use('/api/connection', connectionRouter)
+app.use('/api/feed', feedRouter)
 app.use('/api/post-caption', postCaptionRouter)
 app.use('/api/post-photo', postPhotoRouter)
 app.use('/api/profile-picture', profilePictureRouter)

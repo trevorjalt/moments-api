@@ -1,26 +1,45 @@
 const express = require('express')
-const path = require('path')
 const ConnectionService = require('./connection-service')
 const { requireAuth } = require('../middleware/jwt-auth')
 
 const connectionRouter = express.Router()
 
 connectionRouter
-    .route('/')
-    .get(requireAuth, getConnections)
+    .route('/followers')
+    .get(requireAuth, getUserFollowers)
+
+connectionRouter
+    .route('/following')
+    .get(requireAuth, getUserFollowing)
     
-async function getConnections(req, res, next) {
+async function getUserFollowers(req, res, next) {
     try {
-        const userFollowing = await ConnectionService.getUserFollowers(
+
+        const userFollowers = await ConnectionService.getUserFollowers(
             req.app.get('db'),
             req.user.id
         )
 
         return await res
             .status(200)
-            .json({
-                userFollowing,
-            })
+            .json(userFollowers)
+            .end()
+    } catch (error) {
+        next(error)
+    }
+}
+
+async function getUserFollowing(req, res, next) {
+    try {
+
+        const userFollowing = await ConnectionService.getUserFollowing(
+            req.app.get('db'),
+            req.user.id
+        )
+
+        return await res
+            .status(200)
+            .json(userFollowing)
             .end()
     } catch (error) {
         next(error)

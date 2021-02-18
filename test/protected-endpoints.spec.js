@@ -40,6 +40,21 @@ describe('Protected endpoints', function() {
 
     const protectedEndpoints = [
         {
+            name: 'GET /api/connection/followers',
+            path: '/api/connection/followers',
+            method: supertest(app).get,
+        },
+        {
+            name: 'GET /api/connection/following',
+            path: '/api/connection/following',
+            method: supertest(app).get,
+        },
+        {
+            name: 'GET /api/feed',
+            path: '/api/feed',
+            method: supertest(app).get,
+        },
+        {
             name: 'GET /api/post-caption',
             path: '/api/post-caption',
             method: supertest(app).get,
