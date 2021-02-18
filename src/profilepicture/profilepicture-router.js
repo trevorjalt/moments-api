@@ -1,13 +1,10 @@
 const express = require('express')
 const fs = require('fs')
 const multer = require('multer')
-const path = require('path')
 const ProfilePictureService = require('./profilepicture-service')
-// const { DB_URL } = require('../config')
 const { requireAuth } = require('../middleware/jwt-auth')
 
 const profilePictureRouter = express.Router()
-// const jsonBodyParser = express.json()
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -21,7 +18,7 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 1024 * 1024 * 1 // allowed image size, set to 1MB
+        fileSize: 1024 * 1024 * 1 
     }
 })
 
@@ -38,15 +35,10 @@ profilePictureRouter
     .get(requireAuth, downloadProfilePicture)
 
 async function uploadProfilePicture(req, res, next) {
-    try { 
-        
-        // console.log('REQUEST REQUEST', req)
-        // console.log('FILE FILE', req.file)
-        
+    try {        
         const imgData = fs.readFileSync(req.file.path)
 
         const uploadData = {
-            // name: req.body.someText,
             img_type: req.file.mimetype,
             img_file: imgData
         }
@@ -64,8 +56,6 @@ async function uploadProfilePicture(req, res, next) {
             uploadData
         )
 
-        // console.log(rows[0]);
-
         fs.unlink(req.file.path, function(err) {
             if (err) {
                 next(err)
@@ -80,11 +70,7 @@ async function uploadProfilePicture(req, res, next) {
 }
 
 async function updateProfilePicture(req, res, next) {   
-    try { 
-        
-        // console.log('REQUEST REQUEST', req)
-        // console.log('FILE FILE', req.file)
-        
+    try {         
         const imgData = fs.readFileSync(req.file.path)
 
         const updateData = {
@@ -105,8 +91,6 @@ async function updateProfilePicture(req, res, next) {
             req.params.profilepicture_id,
             updateData
         )
-
-        // console.log(rows[0]);
 
         fs.unlink(req.file.path, function(err) {
             if (err) {

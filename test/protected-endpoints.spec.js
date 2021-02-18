@@ -10,6 +10,7 @@ describe('Protected endpoints', function() {
         testProfilePicture,
         // testConnections,
         testPostPhoto,
+        testPostCaption,
     } = helpers.makeMomentsFixtures()
 
     before('make knex instance', () => {
@@ -33,7 +34,7 @@ describe('Protected endpoints', function() {
                 testProfilePicture,
                 //   testConnections,
                 testPostPhoto,
-                
+                testPostCaption,                
             )
     )
 

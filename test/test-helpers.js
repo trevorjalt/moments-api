@@ -1,8 +1,6 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const fs = require('fs')
 require('dotenv').config()
-// const TestImage = require('./images/moments-test.png')
 
 
 function makeUsersArray() {
@@ -103,26 +101,6 @@ function makeExpectedImage(profilepicture) {
     
 }
 
-function makeMaliciousCaption(user, postphoto) {
-    const maliciousCaption = {
-        id: 911,
-        caption: 'Naughty naughty very naughty <script>alert("xss");</script>',
-        date_created: new Date(),
-        date_modified: null,
-        post_photo_id: postphoto.id,
-        user_id: user.id,
-    }
-
-    const expectedCaption = {
-        ...makeExpectedCaption(maliciousCaption),
-        caption: 'Naughty naughty very naughty &lt;script&gt;alert("xss");&lt;/script&gt;',
-    }
-    return {
-        maliciousCaption,
-        expectedCaption,
-    }
-}
-
 function seedUsers(db, users) {
     const preppedUsers = users.map(user => ({
         ...user,
@@ -173,12 +151,6 @@ function seedMomentsTables(db, users, profilepicture, postphoto, postcaption ) {
     })
 }
 
-function seedMaliciousCaption(db, caption) {
-    return db
-        .into('post_caption')
-        .insert([caption])    
-}
-
 function cleanTables(db) {
     return db.transaction(trx =>
         trx.raw(
@@ -215,9 +187,7 @@ module.exports = {
     makeAuthHeader,
     makeExpectedCaption,
     makeExpectedImage,
-    makeMaliciousCaption,
     seedUsers,
     seedMomentsTables,
-    seedMaliciousCaption,
     cleanTables,
 }

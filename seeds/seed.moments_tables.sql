@@ -83,6 +83,23 @@ INSERT INTO user_information (
         'krillin@krillin.com',
         'I thought this was already decided...',
         'Public'
-    );   
+    );
+
+    INSERT INTO user_connection (
+        followed_user_id,
+        user_id
+    ) VALUES
+        (2, 1),
+        (3, 1),
+        (4, 1),
+        (5, 1),
+        (1, 2),
+        (1, 3),
+        (1, 4),
+        (1, 5),
+        (1, 6),
+        (1, 7),
+        (1, 8),
+        (1, 9);
 
 COMMIT;

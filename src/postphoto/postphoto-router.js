@@ -1,14 +1,11 @@
 const express = require('express')
 const fs = require('fs')
 const multer = require('multer')
-const path = require('path')
 const PostPhotoService = require('./postphoto-service')
 const PostCaptionService = require ('../postcaption/postcaption-service')
-// const { DB_URL } = require('../config')
 const { requireAuth } = require('../middleware/jwt-auth')
 
 const postPhotoRouter = express.Router()
-// const jsonBodyParser = express.json()
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -22,7 +19,7 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 1024 * 1024 * 1 // allowed image size, set to 1MB
+        fileSize: 1024 * 1024 * 1 
     }
 })
 
@@ -36,11 +33,7 @@ postPhotoRouter
 
 
 async function uploadPostPhoto(req, res, next) {
-    try { 
-        
-        // console.log('REQUEST REQUEST', req.body)
-        // console.log('FILE FILE', req.file)
-        
+    try {       
         const imgData = fs.readFileSync(req.file.path)
 
         const captionData = req.body.caption_input
@@ -63,18 +56,12 @@ async function uploadPostPhoto(req, res, next) {
             uploadData
         )
 
-        // console.log('ROW ROW ROW', rows);
-
         fs.unlink(req.file.path, function(err) {
             if (err) {
                 next(err)
                 return
             }
             console.log('Temp Image Deleted')
-            // return res
-            //     .status(201)
-            //     .json(PostPhotoService.serializePost(rows))
-            //     // .end()
         })
 
         const postPhotoId = PostPhotoService.serializePost(rows)
@@ -99,7 +86,6 @@ async function uploadPostPhoto(req, res, next) {
 
         await res
             .status(201)
-            // .location(`/api/post-caption/${postcaption.id}`)
             .json(PostCaptionService.serializeCaption(postcaption))
             .end()
     } catch(error) {
@@ -123,25 +109,25 @@ async function downloadPostPhoto(req, res, next) {
     }
 }
 
-async function verifyPostPhotoExists(req, res, next) {
-    try {
-        const currentPostPhoto = await PostPhotoService.getById(
-            req.app.get('db'),
-            req.params.postphoto_id
-        )
+// async function verifyPostPhotoExists(req, res, next) {
+//     try {
+//         const currentPostPhoto = await PostPhotoService.getById(
+//             req.app.get('db'),
+//             req.params.postphoto_id
+//         )
 
-        if(!currentPostPhoto)
-            return await res.status(404).json({
-                error: { message:`Post photo not found` }
-            })
+//         if(!currentPostPhoto)
+//             return await res.status(404).json({
+//                 error: { message:`Post photo not found` }
+//             })
 
-        res.postphoto = currentPostPhoto
+//         res.postphoto = currentPostPhoto
 
-        next()
+//         next()
         
-    } catch (error) {
-        next(error)
-    }
-}
+//     } catch (error) {
+//         next(error)
+//     }
+// }
 
 module.exports = postPhotoRouter
