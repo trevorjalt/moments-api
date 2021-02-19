@@ -46,7 +46,7 @@ function makeImageArray(users) {
             img_type: 'image/jpg',
             img_file: { type: 'Buffer', data: [] },
             user_id: users[0].id
-        }
+        },
     ]
 }
 
@@ -62,12 +62,34 @@ function makePostCaptionArray(users, postphotos) {
     ]
 }
 
+function makeConnectionsArray() {
+    return [
+        {
+            id: 1,
+            followed_user_id: 1,
+            user_id: 2
+        },
+        {
+            id: 2,
+            followed_user_id: 3,
+            user_id: 2
+        },
+        {
+            id: 3,
+            followed_user_id: 3,
+            user_id: 1
+        }
+    ]
+
+}
+
 function makeMomentsFixtures() {
     const testUsers = makeUsersArray()
     const testProfilePicture = makeImageArray(testUsers)
+    const testConnections = makeConnectionsArray(testUsers)
     const testPostPhoto = makeImageArray(testUsers)
     const testPostCaption = makePostCaptionArray(testUsers, testPostPhoto)
-    return { testUsers, testProfilePicture, testPostPhoto, testPostCaption }
+    return { testUsers, testProfilePicture, testConnections, testPostPhoto, testPostCaption }
 }
 
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
@@ -87,6 +109,14 @@ function makeExpectedCaption(caption) {
         post_photo_id: caption.post_photo_id,
         user_id: caption.user_id,
     }    
+}
+
+function makeExpectedNoConnections() {
+    return {
+        userFollowerCount: [ { count: '0' } ],
+        userFollowingCount: [ { count: '0' } ],
+        userPostCount: [ { count: '0' } ]
+    }
 }
 
 function makeExpectedImage(profilepicture) {
@@ -115,7 +145,7 @@ function seedUsers(db, users) {
         )
 }
 
-function seedMomentsTables(db, users, profilepicture, postphoto, postcaption ) {
+function seedMomentsTables(db, users, profilepicture, connections, postphoto, postcaption ) {
     // use a transaction to group the queries and auto rollback on any failure
     return db.transaction(async trx => {
         await seedUsers(trx, users)
@@ -126,13 +156,13 @@ function seedMomentsTables(db, users, profilepicture, postphoto, postcaption ) {
             [profilepicture[profilepicture.length - 1].id],
         )
         //only insert connections if there are some, also update the sequence counter
-        // if (connections) {
-        //     await trx.into('user_connection').insert(connections)
-        //     await trx.raw(
-        //         `SELECT setval('user_connection_id_seq', ?)`,
-        //         [connections[connections.length -1].id],
-        //     )
-        // }
+        if (connections) {
+            await trx.into('user_connection').insert(connections)
+            await trx.raw(
+                `SELECT setval('user_connection_id_seq', ?)`,
+                [connections[connections.length -1].id],
+            )
+        }
         // //only insert postphotos if there are some, also update the sequence counter
         if (postphoto) {
             await trx.into('post_photo').insert(postphoto)
@@ -183,9 +213,11 @@ module.exports = {
     makeUsersArray,
     makeImageArray,
     makePostCaptionArray,
+    makeConnectionsArray,
     makeMomentsFixtures,
     makeAuthHeader,
     makeExpectedCaption,
+    makeExpectedNoConnections,
     makeExpectedImage,
     seedUsers,
     seedMomentsTables,

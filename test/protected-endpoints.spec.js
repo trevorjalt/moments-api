@@ -8,7 +8,7 @@ describe('Protected endpoints', function() {
     const {
         testUsers,
         testProfilePicture,
-        // testConnections,
+        testConnections,
         testPostPhoto,
         testPostCaption,
     } = helpers.makeMomentsFixtures()
@@ -32,6 +32,7 @@ describe('Protected endpoints', function() {
                 db,
                 testUsers,
                 testProfilePicture,
+                testConnections,
                 testPostPhoto,
                 testPostCaption,                
             )

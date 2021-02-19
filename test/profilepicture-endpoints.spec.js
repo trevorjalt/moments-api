@@ -116,4 +116,43 @@ describe('ProfilePicture Endpoints', function() {
             })
         })
     })
+
+    describe(`GET /api/profile-picture/download/:requested_user_id`, () => {
+        context(`Given no profile picture in the database`, () => {
+            beforeEach('insert users', () =>
+                helpers.seedUsers(
+                    db,
+                    testUsers,
+                )
+            )
+
+            it(`responds with 200 and an empty list`, () => {
+                return supertest(app)
+                    .get(`/api/profile-picture/download/${testUsers[0].id}`)
+                    .set('Authorization', helpers.makeAuthHeader(testUser))
+                    .expect(200, [])
+            })
+        })
+
+        context(`Given there is a profile picture in the database`, () => {
+            beforeEach('insert profile picture', () =>
+                helpers.seedMomentsTables(
+                    db,
+                    testUsers,
+                    testProfilePicture,
+                )
+            )
+
+            it(`responds with 200 and the profile picture`, () => {
+                this.retries(3)
+                const expectedImage = testProfilePicture.map(profilepic =>
+                    helpers.makeExpectedImage(profilepic)
+                )
+                return supertest(app)
+                        .get(`/api/profile-picture/download/${testUsers[0].id}`)
+                        .set('Authorization', helpers.makeAuthHeader(testUser))
+                        .expect(200, expectedImage)
+            })
+        })
+    })
 })

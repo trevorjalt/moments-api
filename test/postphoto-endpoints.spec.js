@@ -6,7 +6,7 @@ const supertest = require('supertest')
 describe('PostPhoto Endpoints', function() {
     let db
 
-    const { testUsers, testProfilePicture, testPostPhoto } = helpers.makeMomentsFixtures()
+    const { testUsers, testProfilePicture, testConnections, testPostPhoto } = helpers.makeMomentsFixtures()
     const testUser = testUsers[0]
 
     before('make knex instance', () => {
@@ -28,6 +28,8 @@ describe('PostPhoto Endpoints', function() {
             helpers.seedMomentsTables(
                 db,
                 testUsers,
+                testProfilePicture,
+                testConnections,
                 testPostPhoto,
             )
         )
@@ -37,7 +39,7 @@ describe('PostPhoto Endpoints', function() {
 
             const newCaption = {
                 caption: 'All the great quotes and lyrics', // captionData
-                post_photo_id: testPostPhoto[0].id,
+                post_photo_id: 2,
             }
 
             return supertest(app)
@@ -96,6 +98,7 @@ describe('PostPhoto Endpoints', function() {
                     db,
                     testUsers,
                     testProfilePicture,
+                    testConnections,
                     testPostPhoto,
                 )
             )
@@ -107,6 +110,47 @@ describe('PostPhoto Endpoints', function() {
                 )
                 return supertest(app)
                         .get('/api/post-photo/download')
+                        .set('Authorization', helpers.makeAuthHeader(testUser))
+                        .expect(200, expectedImage)
+            })
+        })
+    })
+
+    describe(`GET /api/post-photo/download/:requested_user_id`, () => {
+        context(`Given no post photos in the database`, () => {
+            beforeEach('insert users', () =>
+                helpers.seedUsers(
+                    db,
+                    testUsers,
+                )
+            )
+
+            it(`responds with 200 and an empty list`, () => {
+                return supertest(app)
+                    .get(`/api/post-photo/download/${testUsers[0].id}`)
+                    .set('Authorization', helpers.makeAuthHeader(testUser))
+                    .expect(200, [])
+            })
+        })
+
+        context(`Given there is a post photo in the database`, () => {
+            beforeEach('insert post photo', () =>
+                helpers.seedMomentsTables(
+                    db,
+                    testUsers,
+                    testProfilePicture,
+                    testConnections,
+                    testPostPhoto,
+                )
+            )
+
+            it(`responds with 200 and the post photo`, () => {
+                this.retries(3)
+                const expectedImage = testPostPhoto.map(postphoto =>
+                    helpers.makeExpectedImage(postphoto)
+                )
+                return supertest(app)
+                        .get(`/api/post-photo/download/${testUsers[0].id}`)
                         .set('Authorization', helpers.makeAuthHeader(testUser))
                         .expect(200, expectedImage)
             })
