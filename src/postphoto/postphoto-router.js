@@ -130,7 +130,7 @@ async function verifyUserExists(req, res, next) {
             req.params.requested_user_id
         )
 
-        if(!requestedUserPostPhoto.length)
+        if(!requestedUserPostPhoto)
             return await res.status(404).json({
                 error: { message:`No post photos found` }
             })

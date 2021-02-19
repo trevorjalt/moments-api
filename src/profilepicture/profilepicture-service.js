@@ -19,7 +19,7 @@ const ProfilePictureService = {
         return db
             .from('user_profile_picture AS profilepicture')
             .select('*')
-            .where('profilepicture.id', id)
+            .where('profilepicture.user_id', id)
     },
 
     updateProfilePicture(db, id, newProfilePictureFields) {

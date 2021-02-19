@@ -8,6 +8,7 @@ const ConnectionService = {
                 'user_information.id',
                 'user_information.fullname',
                 'user_information.username',
+                'user_information.about_user',
                 'user_profile_picture.img_file',
                 'user_profile_picture.img_type',
                 'user_connection.date_created'
@@ -34,6 +35,7 @@ const ConnectionService = {
                 'user_information.id',
                 'user_information.fullname',
                 'user_information.username',
+                'user_information.about_user',
                 'user_profile_picture.img_file',
                 'user_profile_picture.img_type',
                 'user_connection.date_created'

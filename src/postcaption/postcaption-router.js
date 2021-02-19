@@ -20,9 +20,11 @@ async function getUserPostCaptions(req, res, next) {
             req.user.id
         )
 
+        const serialized = postCaptions.map(PostCaptionService.serializeCaption)
+
         return res
             .status(200)
-            .json(postCaptions.map(PostCaptionService.serializeCaption))
+            .json(serialized)
             .end()
     } catch (error) {
         next (error)
@@ -47,7 +49,7 @@ async function verifyUserExists(req, res, next) {
             req.params.requested_user_id
         )
 
-        if(!requestedUserPostCaption.length)
+        if(!requestedUserPostCaption)
             return await res.status(404).json({
                 error: { message:`No post captions found` }
             })
