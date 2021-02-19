@@ -13,7 +13,7 @@ const FeedService = {
                 'post_caption.post_photo_id',
                 'user_information.username',
                 'user_profile_picture.img_type AS profile_pic_type',
-                'user_profile_picture.img_file AS profile_pic_file'
+                'user_profile_picture.img_file AS profile_pic_file',
             )
             .leftJoin(
                 'post_caption',

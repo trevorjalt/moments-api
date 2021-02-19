@@ -32,7 +32,6 @@ describe('Protected endpoints', function() {
                 db,
                 testUsers,
                 testProfilePicture,
-                //   testConnections,
                 testPostPhoto,
                 testPostCaption,                
             )
@@ -47,6 +46,11 @@ describe('Protected endpoints', function() {
         {
             name: 'GET /api/connection/following',
             path: '/api/connection/following',
+            method: supertest(app).get,
+        },
+        {
+            name: 'GET /api/count',
+            path: '/api/count',
             method: supertest(app).get,
         },
         {
