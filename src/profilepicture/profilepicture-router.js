@@ -34,6 +34,10 @@ profilePictureRouter
     .route('/download')
     .get(requireAuth, downloadProfilePicture)
 
+profilePictureRouter
+    .route('/download/:profilepicture_id')
+    .get(requireAuth, verifyProfilePictureExists, downloadSelectedProfilePicture)
+
 async function uploadProfilePicture(req, res, next) {
     try {        
         const imgData = fs.readFileSync(req.file.path)
@@ -107,13 +111,26 @@ async function updateProfilePicture(req, res, next) {
 
 async function downloadProfilePicture(req, res, next) {
     try {
+
         const rows = await ProfilePictureService.getProfilePicture(
             req.app.get('db'),
             req.user.id
         )
+        
         return res
             .status(200)
             .json(rows)
+            .end()
+    } catch(error) {
+        next(error)
+    }
+}
+
+async function downloadSelectedProfilePicture(req, res, next) {
+    try {
+        await res
+            .status(200)
+            .json(res.profilepicture)
             .end()
     } catch(error) {
         next(error)

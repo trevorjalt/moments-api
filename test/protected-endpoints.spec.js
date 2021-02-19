@@ -60,6 +60,11 @@ describe('Protected endpoints', function() {
             method: supertest(app).get,
         },
         {
+            name: 'GET /api/post-caption/:requested_user_id',
+            path: '/api/post-caption/:requested_user_id',
+            method: supertest(app).get,
+        },
+        {
             name: 'POST /api/post-photo/upload',
             path: '/api/post-photo/upload',
             method: supertest(app).post,
@@ -67,6 +72,11 @@ describe('Protected endpoints', function() {
         {
             name: 'GET /api/post-photo/download',
             path: '/api/post-photo/download',
+            method: supertest(app).get,
+        },
+        {
+            name: 'GET /api/post-photo/download/:requested_user_id',
+            path: '/api/post-photo/download/:requested_user_id',
             method: supertest(app).get,
         },
         {
@@ -82,6 +92,11 @@ describe('Protected endpoints', function() {
         {
             name: 'GET /api/profile-picture/download',
             path: '/api/profile-picture/download',
+            method: supertest(app).get,
+        },
+        {
+            name: 'GET /api/profile-picture/download/:profilepicture_id',
+            path: '/api/profile-picture/download/:profilepicture_id',
             method: supertest(app).get,
         },
     ]

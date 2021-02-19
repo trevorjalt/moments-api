@@ -31,6 +31,9 @@ postPhotoRouter
     .route('/download')
     .get(requireAuth, downloadPostPhoto)
 
+postPhotoRouter
+    .route('/download/:requested_user_id')
+    .get(requireAuth, verifyUserExists, downloadRequestedUserPostPhoto)
 
 async function uploadPostPhoto(req, res, next) {
     try {       
@@ -109,25 +112,36 @@ async function downloadPostPhoto(req, res, next) {
     }
 }
 
-// async function verifyPostPhotoExists(req, res, next) {
-//     try {
-//         const currentPostPhoto = await PostPhotoService.getById(
-//             req.app.get('db'),
-//             req.params.postphoto_id
-//         )
+async function downloadRequestedUserPostPhoto(req, res, next) {
+    try {
+        await res
+            .status(200)
+            .json(res.requestedUserPostPhotos)
+            .end()
+    } catch {
+        next()
+    }
+}
 
-//         if(!currentPostPhoto)
-//             return await res.status(404).json({
-//                 error: { message:`Post photo not found` }
-//             })
+async function verifyUserExists(req, res, next) {
+    try {
+        const requestedUserPostPhoto = await PostPhotoService.getRequestedUserPostPhotos(
+            req.app.get('db'),
+            req.params.requested_user_id
+        )
 
-//         res.postphoto = currentPostPhoto
+        if(!requestedUserPostPhoto.length)
+            return await res.status(404).json({
+                error: { message:`No post photos found` }
+            })
 
-//         next()
+        res.requestedUserPostPhotos = requestedUserPostPhoto
+
+        next()
         
-//     } catch (error) {
-//         next(error)
-//     }
-// }
+    } catch (error) {
+        next(error)
+    }
+}
 
 module.exports = postPhotoRouter

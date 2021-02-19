@@ -18,6 +18,14 @@ const PostPhotoService = {
             )
     },
 
+    getRequestedUserPostPhotos(db, requested_user_id) {
+        return db
+            .from('post_photo')
+            .select('*')
+            .where('post_photo.user_id', requested_user_id)
+            .orderBy('post_photo.date_created', 'desc')
+    },
+
     getById(db, id) {
         return db
             .from('post_photo AS post_photo')

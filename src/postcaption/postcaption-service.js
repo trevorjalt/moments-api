@@ -27,6 +27,14 @@ const PostCaptionService = {
             )
     },
 
+    getRequestedUserPostCaptions(db, requested_user_id) {
+        return db
+            .from('post_caption')
+            .select('*')
+            .where('post_caption.user_id', requested_user_id)
+            .orderBy('post_caption.date_created', 'desc')
+    },
+
     serializeCaption(caption) {
         return {
             id: caption.id,
