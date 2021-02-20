@@ -1,6 +1,6 @@
 # moments Api
 
-moments is developer Trevor J Alt’s love letter to Instagram,  a social media platform and passion project designed for ongoing development and personal educational growth in how to implement a heavily conditionally rendered environment which handles large amounts of data storage and retrieval.  
+`moments` is developer Trevor J Alt’s love letter to Instagram,  a social media platform and passion project designed for ongoing development and personal educational growth in how to implement a heavily conditionally rendered environment which handles large amounts of data storage and retrieval.  
 
 And really, who doesn’t love scrolling through photos attached with inspirational quotes and song lyrics?
 
@@ -158,7 +158,7 @@ psql -U kakarot -d moments -f ./seeds/seed.moments_tables.sql
 
 ## quick start scripts.
 
-Run the benchmark tests
+Run the `moments` tests
 
 ````
 npm t
