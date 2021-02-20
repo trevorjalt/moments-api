@@ -447,4 +447,4 @@ Endpoint runs through `multer` and requires `multipart/form-data`
 }
 ````
 
-## "its all about the moments" 
+## "it's all about the moments" 
