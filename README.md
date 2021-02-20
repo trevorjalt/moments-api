@@ -17,7 +17,7 @@ The `moments` frontend can be found at: [moments-client](https://github.com/trev
 
 ## table of contents.
 
-* [demo account details](#demo-account-details)
+* [demo credentials](#democredentials)
 * [the tech](#the-tech)
   * [backend](#backend)
   * [production](#production)
