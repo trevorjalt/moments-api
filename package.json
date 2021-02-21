@@ -1,7 +1,7 @@
 {
   "name": "moments-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "`moments` is developer Trevor J Alt’s love letter to Instagram, a social media platform and passion project designed for ongoing development and personal educational growth in image processing and how to implement a heavily conditionally rendered environment which handles large amounts of data storage and retrieval. ",
   "main": "index.js",
   "scripts": {
     "test": "mocha --require test/setup.js",
